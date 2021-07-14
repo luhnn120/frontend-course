@@ -40,40 +40,54 @@ async function getImageHandle() {
   reader.readAsDataURL(fileData)
 }
 
-// 文件保存
+// 图片下载
 function saveImageHandle() {
   const c = document.querySelector("#grey-img");
-  aDom.href = URI
-  aDom.click();
+  c.toBlob((blob) => {
+    // 创建a标签，触发click实现下载
+    const aDom = document.createElement('a')
+    const downLoadUrl =  URL.createObjectURL(blob)
+    aDom.href = downLoadUrl
+    aDom.setAttribute('download','')
+    aDom.click();
+    URL.revokeObjectURL(downLoadUrl)
+  })
 }
 
+// 灰度图转换
 function changeImageHandle() {
-  var c = document.querySelector("#grey-img");
-  var ctx = c.getContext("2d");
-  var imgSource = document.querySelector("#source");
+  const c = document.querySelector("#grey-img");
+  const ctx = c.getContext("2d");
+  const imgSource = document.querySelector("#source");
   const h = imgSource.clientHeight,
     w = imgSource.clientWidth
-  ctx.drawImage(imgSource, 0, 0, w, h);
-  var imgData = ctx.getImageData(0, 0, w, h);
-  for (var i = 0; i < imgData.data.length; i += 4) {
-    var R = imgData.data[i]; //R(0-255)
-    var G = imgData.data[i + 1]; //G(0-255)
-    var B = imgData.data[i + 2]; //G(0-255)
-    var Alpha = imgData.data[i + 3]; //Alpha(0-255)
+  // 画布初始大小
+  c.width = imgSource.naturalWidth;
+  c.height = imgSource.naturalHeight;
+  ctx.drawImage(imgSource, 0, 0, w ,h);
+  const imgData = ctx.getImageData(0, 0, w, h);
+  // 绘制完后，调整展示大小
+  c.width = w
+  c.height = h
+  // 灰度转换
+  for (let i = 0; i < imgData.data.length; i += 4) {
+    const R = imgData.data[i]; //R(0-255)
+    const G = imgData.data[i + 1]; //G(0-255)
+    const B = imgData.data[i + 2]; //G(0-255)
+    const Alpha = imgData.data[i + 3]; //Alpha(0-255)
     //浮点算法
-    // var gray = R * 0.299 + G * 0.587 + B * 0.114;
+    // const gray = R * 0.299 + G * 0.587 + B * 0.114;
     //整数算法
-    //  var gray = (R*299 + G*587 + B*114 + 500) / 1000;　
+    //  const gray = (R*299 + G*587 + B*114 + 500) / 1000;　
     //移位算法
-    //  var gray =(R*76+G*151+B*28)>>8;
+    //  const gray =(R*76+G*151+B*28)>>8;
     //平均值算法
-    var gray = Math.floor((R + G + B) / 3);
+    const gray = Math.floor((R + G + B) / 3);
     imgData.data[i] = gray;
     imgData.data[i + 1] = gray;
     imgData.data[i + 2] = gray;
     imgData.data[i + 3] = Alpha;
   }
+  // 重新绘制
   ctx.putImageData(imgData, 0, 0);
-  // console.log(c.toDataURL())
-  // document.querySelector("#grey-img").src = c.toDataURL();
 }
