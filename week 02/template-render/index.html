@@ -5,33 +5,31 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>template-render</title>
+  <style>
+    .newslist{
+      margin-top: 10px;
+      padding: 2% 8%;
+      display: flex;
+      align-items: center;
+    }
+    .img{
+      border: solid 1px black;
+      margin: 0 8px;
+    }
+    .name{
+      color: orange;
+      font-size: 16px;
+    }
+    img{
+      width: 200px;
+    }
+  </style>
 </head>
 <body>
   <div id='app'></div>
   <script src="./Vnode.js"></script>
   <script src="./engine.js"></script>
   <script src="./V1.js"></script>
-  <script>
-    let tmpl = `<div class="newslist">
-      <div class="img" v-if="info.showImage"><img src="{{image}}"/></div>
-      <div class="date" v-if="info.showDate">{{info.name}}</div>
-      <div class="img">{{info.name}}</div>
-    </div>`;
- 
-    // render(tmpl, {
-    // 	image: "some img", 
-    //     info: {showImage: true, showDate:false, name: "aaa"}
-    // })
-
-    // let templateStr = `
-    //   <div>
-    //     {{ hello }}
-    //   </div>
-    // `
-    new Template().mounted(document.querySelector('#app')).render(tmpl, {
-      image: "some img", 
-      info: {showImage: true, showDate:false, name: "aaa"}
-    })
-  </script>
+  <script src="./index.js"></script>
 </body>
 </html>
