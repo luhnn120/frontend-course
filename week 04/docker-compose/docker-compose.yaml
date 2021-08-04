@@ -1,0 +1,27 @@
+version: '3'
+
+networks:
+  nginx_demo:
+    driver: bridge
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx-alpine
+    restart: always
+    privileged: true
+    environment:
+      - TZ=Asia/Shanghai 
+    ports:
+      - 8080:80
+      - 8081:80
+      - 8082:80
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./conf.d:/etc/nginx/conf.d
+      - ./log:/var/log/nginx
+      - ./dist:/opt/dist:ro
+    networks:
+      - nginx_demo
