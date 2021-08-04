@@ -1,14 +1,23 @@
 <template>
   <div>
     <h1>vue-editor</h1>
-    <MonacoEditor
-      width="800"
-      height="500" 
-      theme="vs-dark" 
-      language="javascript" 
-      :editorMounted="onEditorMounted" 
-      :options="options"
-    ></MonacoEditor>
+    <main>
+      <MonacoEditor
+        width="800"
+        height="500" 
+        theme="vs-dark" 
+        language="javascript" 
+        :editorMounted="onEditorMounted" 
+        :options="options"
+        class="block"
+      ></MonacoEditor>
+      <iframe
+        :src="rendPageUrl" 
+        width="800"
+        class="block"
+        height="500" frameborder="0">
+      </iframe>
+    </main>
     <button @click="choseFileHandle">get vue file</button>
     <button @click="saveFileHandle">save file</button>
     <button @click="runFileHandle">Run it</button>
@@ -18,6 +27,9 @@
 <script>
   import MonacoEditor from 'monaco-editor-vue';
   import Axios from 'axios';
+  import defaultVueTemplate from './defaultVueTemplate.js'
+  const SERVERURL = process.env.VUE_APP_SERVER_URL;
+  
   export default {
     name: "App",
     components: {
@@ -25,8 +37,9 @@
     },
     data() {
       return {
+        rendPageUrl: SERVERURL,
         options: {
-          value: '', // 初始值
+          value: defaultVueTemplate, // 初始值
           foldingStrategy: 'indentation', // 代码可分小段折叠
           automaticLayout: true, // 自适应布局
           overviewRulerBorder: false, // 不要滚动条的边框
@@ -45,16 +58,17 @@
       async runFileHandle(){
         const formData = new FormData();
         formData.append('file', new Blob([this.editor.getValue()],{type:"text/plain;charset=utf-8"}))
-        Axios.post('http://localhost:3000/generateComponents',formData,{
+        Axios.post(`${SERVERURL}/generateComponents`,formData,{
           header:{
            ' Content-Type': 'multipart/form-data'
           }
         })
         .then(res => {
           console.log(res)
+          this.rendPageUrl = `${SERVERURL}/${res.data}`
         })
-        .catch(err => {
-          console.error(err);
+        .catch(() => {
+          this.rendPageUrl = `${SERVERURL}/error.html`
         })
       },
       // 文件选择
@@ -120,5 +134,12 @@
     text-align: center;
     margin: 10px;
     padding: unset;
+  }
+  main{
+    display: flex;
+  }
+  .block{
+    flex-grow: 1;
+    display: inline-block;
   }
 </style>
