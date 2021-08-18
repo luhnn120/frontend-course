@@ -1,24 +1,16 @@
 # qiankun-demo
 
-## Project setup
+## 安装依赖
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+## 启动服务
 ```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
+npm start
 ```
 
-### Lints and fixes files
+### 访问页面
 ```
-npm run lint
+http://localhost:8080/
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
